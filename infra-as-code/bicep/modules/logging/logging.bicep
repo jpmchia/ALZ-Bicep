@@ -70,6 +70,8 @@ param parLogAnalyticsWorkspaceTags object = parTags
 @description('Set Parameter to true to Opt-out of deployment telemetry')
 param parTelemetryOptOut bool = false
 
+param parDailyCap int = 1
+
 // Customer Usage Attribution Id
 var varCuaid = 'f8087c67-cc41-46b2-994d-66e4b661860d'
 
@@ -96,6 +98,9 @@ resource resLogAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2021
       name: parLogAnalyticsWorkspaceSkuName
     }
     retentionInDays: parLogAnalyticsWorkspaceLogRetentionInDays
+    workspaceCapping: {
+      dailyQuotaGb: parDailyCap
+    }
   }
 }
 

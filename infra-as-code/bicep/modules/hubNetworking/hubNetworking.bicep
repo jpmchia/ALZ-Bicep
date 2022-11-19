@@ -49,13 +49,13 @@ param parAzBastionSku string = 'Standard'
 param parAzBastionNsgName string = 'nsg-AzureBastionSubnet'
 
 @description('Switch to enable/disable DDoS Standard deployment. Default: true')
-param parDdosEnabled bool = true
+param parDdosEnabled bool = false
 
 @description('DDoS Plan Name. Default: {parCompanyPrefix}-ddos-plan')
 param parDdosPlanName string = '${parCompanyPrefix}-ddos-plan'
 
 @description('Switch to enable/disable Azure Firewall deployment. Default: true')
-param parAzFirewallEnabled bool = true
+param parAzFirewallEnabled bool = false
 
 @description('Azure Firewall Name. Default: {parCompanyPrefix}-azure-firewall')
 param parAzFirewallName string = '${parCompanyPrefix}-azfw-${parLocation}'
@@ -210,6 +210,9 @@ param parExpressRouteGatewayConfig object = {
     peerWeight: '5'
   }
 }
+
+/// CUSTOMISE NAME for Public IP Address for VPN Gateway
+param parGwPublicIpName string = 'pip-${parCompanyPrefix}-gw'
 
 @description('Tags you would like to be applied to all resources in this module. Default: Empty Object')
 param parTags object = {}
@@ -456,7 +459,8 @@ module modGatewayPublicIp '../publicIp/publicIp.bicep' = [for (gateway, i) in va
   params: {
     parLocation: parLocation
     parAvailabilityZones: gateway.gatewayType == 'ExpressRoute' ? parAzErGatewayAvailabilityZones : gateway.gatewayType == 'Vpn' ? parAzVpnGatewayAvailabilityZones : []
-    parPublicIpName: '${gateway.name}-PublicIp'
+    //parPublicIpName: '${gateway.name}-PublicIp'
+    parPublicIpName: parGwPublicIpName
     parPublicIpProperties: {
       publicIpAddressVersion: 'IPv4'
       publicIpAllocationMethod: 'Static'
